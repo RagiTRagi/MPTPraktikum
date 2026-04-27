@@ -13,7 +13,15 @@ def processImage(frame):
     :param frame: 3-channel BGR image (np.array)
     :return: 3-tupel (gx, gy, grad) containing the gradient image in X and Y direction as well as the gradient magnitude image (1-channel np.float32 images each).
     """
-    pass
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    gray_morm = gray.astype(np.float32) / 255.0
+
+    gx = cv2.Sobel(gray_morm, dx=1, dy=0, ksize=3, ddepth=cv2.CV_32F) / 4
+    gy = cv2.Sobel(gray_morm, dx=0, dy=1, ksize=3, ddepth=cv2.CV_32F) / 4
+
+    grad = np.sqrt(gx**2 + gy**2) / np.sqrt(2.0)
+
+    return (gx, gy, grad)
 
 
 def displayImage(gx, gy, grad):
@@ -24,28 +32,33 @@ def displayImage(gx, gy, grad):
     :param gy: Gradient image in Y-Direction (np.float32 image with values between -1 and +1)
     :param grad: Gradient magnitude image (np.float32 image with values between 0 and 1)
     """
-    pass
+    cv2.imshow("Gradient X", (0.5 * gx + 0.5))
+    cv2.imshow("Gradient Y", (0.5 * gy + 0.5))
+
+    cv2.imshow("Gradient Magnitude", 4 * grad)
 
 
 def mainLoop():
     """
     The main loop of this program
     """
-    # TODO: Open the default camera
+    cap = cv2.VideoCapture(0)  
 
     while True:
-        # TODO: Read next image from camera
+        _, frame = cap.read()
 
-        # TODO: Call processImage to retrieve properly scaled gradient direction and magnitude images
+        gx, gy, grad = processImage(frame)
 
-        # TODO: Call displayImage to display the images
+        displayImage(gx, gy, grad)
 
-        # TODO: Also display the original camera image in color
+        cv2.imshow("Kamerabild", frame)
 
-        # TODO: Break the infinite loop when the users presses ESCAPE (27)
-        pass
+        key = cv2.waitKey(1)
+        if key == ord("q"):
+            break
+        
 
-    # TODO: Release the capture and writer objects
+    
 
 
 if __name__ == "__main__":
