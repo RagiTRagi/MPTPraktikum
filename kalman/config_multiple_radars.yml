@@ -1,0 +1,42 @@
+applicationame: Kalman
+simulation:
+  scansPerSecond: 33
+  simulateSeconds: 2
+target:
+  minDistance: 50.0
+  maxDistance: 50.0
+  minVelocity: 50.0
+  maxVelocity: 50.0
+  minAcceleration: 0.0
+  maxAcceleration: 0.0
+sensors:
+  - name: SE
+    type: radar
+    position: [45.0, -45.0]
+    longitudinalStdDev: 0.1 # Unit: meters
+    lateralStdDev: 5.0      # Unit: meters
+    missChance: 0.2         # Propability to miss 
+    missLength : 10         # Number of scans we will miss 
+  - name: NW
+    type: radar
+    position: [-45.0, 45.0]
+    longitudinalStdDev: 0.1 # Unit: meters
+    lateralStdDev: 5.0      # Unit: meters
+    missChance: 0.2         # Propability to miss 
+    missLength : 10         # Number of scans we will miss 
+  - name: NE
+    type: radar
+    position: [45.0, 45.0]
+    longitudinalStdDev: 0.1 # Unit: meters
+    lateralStdDev: 5.0      # Unit: meters
+    missChance: 0.2         # Propability to miss 
+    missLength : 10         # Number of scans we will miss 
+  - name: SW
+    type: radar
+    position: [-45.0, -45.0]
+    longitudinalStdDev: 0.1 # Unit: meters
+    lateralStdDev: 5.0      # Unit: meters
+    missChance: 0.2         # Propability to miss 
+    missLength : 10         # Number of scans we will miss 
+  
+

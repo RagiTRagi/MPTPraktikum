@@ -15,6 +15,8 @@ In diesem Dokument finden Sie die verschiedenen Aufgaben und Beispiele zum MPT-P
    Die Webcam öffnen <../webcam/index>
    Kantendetektion mit Sobel <../kanten/index>
    Der Harris Eckendetektor <../harris/index>
+   Good Features To Track <../harris/good_features>
+   Optischer Fluss mit KLT <../opticalflow/index>
    Objekterkennung mit YOLO <../YOLO/index>
    AdaBoost <../AdaBoost/index>
    Histogram of Oriented Gradients <../HOG/index>

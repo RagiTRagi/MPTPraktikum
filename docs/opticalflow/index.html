@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Optischer Fluss mit KLT &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/opticalflow/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Objekterkennung mit YOLO" href="../YOLO/index.html" />
+    <link rel="prev" title="Good Features To Track" href="../harris/good_features.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/good_features.html">Good Features To Track</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Optischer Fluss mit KLT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#optischer-fluss">Optischer Fluss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#das-aperturproblem">Das Aperturproblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyramidaler-lucas-kanade">Pyramidaler Lucas-Kanade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#der-code">Der Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1-das-kamerabild-in-graustufen-umwandeln"><strong>Aufgabe 1</strong>: Das Kamerabild in Graustufen umwandeln</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-2-gute-featurepunkte-detektieren"><strong>Aufgabe 2</strong>: Gute Featurepunkte detektieren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-3-punkte-mit-klt-tracken"><strong>Aufgabe 3</strong>: Punkte mit KLT tracken</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-4-nur-erfolgreiche-tracks-behalten"><strong>Aufgabe 4</strong>: Nur erfolgreiche Tracks behalten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experimentieren">Experimentieren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#klt-optischer-fluss-musterloesung">KLT Optischer Fluss - Musterloesung</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Optischer Fluss mit KLT</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/opticalflow/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="optischer-fluss-mit-klt">
+<span id="opticalflow"></span><h1>Optischer Fluss mit KLT<a class="headerlink" href="#optischer-fluss-mit-klt" title="Link to this heading"></a></h1>
+<p>In dieser Praktikumsaufgabe implementieren wir einen einfachen KLT-Tracker
+auf dem Livebild der Webcam. KLT steht hier fuer
+<strong>Kanade-Lucas-Tomasi</strong>: Lucas und Kanade liefern die lokale
+Bewegungsschaetzung, Tomasi bzw. Shi-Tomasi liefert gute Punkte, fuer die
+diese Schaetzung numerisch stabil ist.</p>
+<p>Wir verwenden zwei OpenCV-Funktionen:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.opencv.org/4.x/dd/d1a/group__imgproc__feature.html#ga4055896d9ef77dd3cacf2c5f60e13f1">cv2.goodFeaturesToTrack</a>
+um gute Ecken im Bild zu finden.</p></li>
+<li><p><a class="reference external" href="https://docs.opencv.org/4.x/dc/d6b/group__video__track.html#ga473e4b886d0bcc6b65831eb88ed93323">cv2.calcOpticalFlowPyrLK</a>
+um diese Punkte von einem Kamerabild ins naechste zu verfolgen.</p></li>
+</ul>
+<section id="optischer-fluss">
+<h2>Optischer Fluss<a class="headerlink" href="#optischer-fluss" title="Link to this heading"></a></h2>
+<p>Optischer Fluss beschreibt die scheinbare Bewegung von Bildpunkten zwischen
+zwei aufeinanderfolgenden Bildern. Wenn sich ein Objekt im Bild bewegt, dann
+verschiebt sich seine Projektion auf dem Bildsensor. Diese Verschiebung nennen
+wir fuer einen Bildpunkt</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\vec d =
+\begin{pmatrix}
+    u\\
+    v
+\end{pmatrix}\end{split}\]</div>
+<p>mit horizontaler Bewegung <span class="math notranslate nohighlight">\(u\)</span> und vertikaler Bewegung <span class="math notranslate nohighlight">\(v\)</span>.</p>
+<p>Die grundlegende Annahme ist die <strong>Helligkeitskonstanz</strong>: Ein kleiner
+Bildausschnitt sieht im naechsten Bild noch gleich aus, nur an einer leicht
+verschobenen Position.</p>
+<div class="math notranslate nohighlight">
+\[I(x, y, t) = I(x + u, y + v, t + 1)\]</div>
+<p>Mit einer Taylorapproximation erster Ordnung erhalten wir daraus die bekannte
+optical-flow equation:</p>
+<div class="math notranslate nohighlight">
+\[I_x u + I_y v + I_t = 0\]</div>
+<p>Dabei sind <span class="math notranslate nohighlight">\(I_x\)</span> und <span class="math notranslate nohighlight">\(I_y\)</span> die raeumlichen Bildableitungen und
+<span class="math notranslate nohighlight">\(I_t\)</span> ist die zeitliche Aenderung zwischen zwei Frames.</p>
+</section>
+<section id="das-aperturproblem">
+<h2>Das Aperturproblem<a class="headerlink" href="#das-aperturproblem" title="Link to this heading"></a></h2>
+<p>Die Gleichung</p>
+<div class="math notranslate nohighlight">
+\[I_x u + I_y v + I_t = 0\]</div>
+<p>enthaelt zwei unbekannte Groessen, <span class="math notranslate nohighlight">\(u\)</span> und <span class="math notranslate nohighlight">\(v\)</span>, aber nur eine
+Gleichung. An einer reinen Kante kann man daher nur die Bewegung senkrecht zur
+Kante sicher bestimmen. Die Bewegung entlang der Kante bleibt unklar. Dieses
+Problem nennt man <strong>Aperturproblem</strong>.</p>
+<p>Lucas und Kanade loesen dieses Problem lokal. Die Annahme lautet: In einem
+kleinen Fenster <span class="math notranslate nohighlight">\(W\)</span> um einen Punkt bewegen sich alle Pixel ungefaehr mit
+derselben Verschiebung <span class="math notranslate nohighlight">\((u,v)\)</span>. Dann koennen wir viele Pixelgleichungen
+gemeinsam betrachten und folgenden Fehler minimieren:</p>
+<div class="math notranslate nohighlight">
+\[E(u, v) =
+\sum_{(x_k,y_k)\in W}
+\left(I_x(x_k,y_k)u + I_y(x_k,y_k)v + I_t(x_k,y_k)\right)^2\]</div>
+<p>Die Normalgleichungen fuer dieses kleinste-Quadrate-Problem lauten:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    \sum I_x^2 &amp; \sum I_x I_y\\
+    \sum I_x I_y &amp; \sum I_y^2
+\end{pmatrix}
+\begin{pmatrix}
+    u\\
+    v
+\end{pmatrix}
+=
+-
+\begin{pmatrix}
+    \sum I_x I_t\\
+    \sum I_y I_t
+\end{pmatrix}\end{split}\]</div>
+<p>Die Matrix links ist wieder der Strukturtensor aus dem Harris-Kapitel. Genau
+deshalb tracken wir bevorzugt Ecken: Bei einer guten Ecke sind beide Eigenwerte
+des Strukturtensors gross genug. Die Matrix ist dann gut invertierbar und die
+gesuchte Verschiebung <span class="math notranslate nohighlight">\((u,v)\)</span> ist stabil bestimmbar.</p>
+</section>
+<section id="pyramidaler-lucas-kanade">
+<h2>Pyramidaler Lucas-Kanade<a class="headerlink" href="#pyramidaler-lucas-kanade" title="Link to this heading"></a></h2>
+<p>Die lokale Lucas-Kanade-Schaetzung funktioniert besonders gut fuer kleine
+Bewegungen. In einem Webcam-Bild koennen Bewegungen aber auch groesser als nur
+ein oder zwei Pixel sein. OpenCV verwendet deshalb eine Bildpyramide:</p>
+<ul class="simple">
+<li><p>Zuerst wird die Bewegung auf einer kleineren Version des Bildes geschaetzt.</p></li>
+<li><p>Diese grobe Schaetzung wird auf der naechstgroesseren Ebene verfeinert.</p></li>
+<li><p>Am Ende erhalten wir die Punktposition im originalen Kamerabild.</p></li>
+</ul>
+<p>Diese Variante ist in <code class="docutils literal notranslate"><span class="pre">cv2.calcOpticalFlowPyrLK</span></code> bereits implementiert.</p>
+</section>
+<section id="der-code">
+<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<p>In diesem Praktikum arbeiten Sie in der Datei</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>opticalflow/klt.py
+</pre></div>
+</div>
+<p>Die Musterloesung befindet sich in <code class="docutils literal notranslate"><span class="pre">opticalflow/klt_solution.py</span></code>.</p>
+<p>Die Parameter fuer <code class="docutils literal notranslate"><span class="pre">cv2.goodFeaturesToTrack</span></code> und
+<code class="docutils literal notranslate"><span class="pre">cv2.calcOpticalFlowPyrLK</span></code> sind im Code bereits als Konstanten
+<code class="docutils literal notranslate"><span class="pre">FEATURE_PARAMS</span></code> und <code class="docutils literal notranslate"><span class="pre">LK_PARAMS</span></code> vorgegeben. Auch der Webcam-Loop und die
+Zeichenfunktionen sind bereits implementiert. In dieser Aufgabe konzentrieren
+wir uns daher nur auf die vier Kernschritte des KLT-Trackings.</p>
+</section>
+<section id="aufgabe-1-das-kamerabild-in-graustufen-umwandeln">
+<h2><strong>Aufgabe 1</strong>: Das Kamerabild in Graustufen umwandeln<a class="headerlink" href="#aufgabe-1-das-kamerabild-in-graustufen-umwandeln" title="Link to this heading"></a></h2>
+<p>Implementieren Sie <code class="docutils literal notranslate"><span class="pre">toGray</span></code>. Die Funktion erhaelt ein Farbbild von der
+Webcam. OpenCV speichert dieses Bild in BGR-Reihenfolge mit der Form
+<span class="math notranslate nohighlight">\(H \times W \times 3\)</span>.</p>
+<p>Wandeln Sie das Bild mit <code class="docutils literal notranslate"><span class="pre">cv2.cvtColor</span></code> und <code class="docutils literal notranslate"><span class="pre">cv2.COLOR_BGR2GRAY</span></code> in ein
+einkanaliges Grauwertbild um und geben Sie dieses Bild zurueck.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Loesung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-2-gute-featurepunkte-detektieren">
+<h2><strong>Aufgabe 2</strong>: Gute Featurepunkte detektieren<a class="headerlink" href="#aufgabe-2-gute-featurepunkte-detektieren" title="Link to this heading"></a></h2>
+<p>Implementieren Sie <code class="docutils literal notranslate"><span class="pre">detectFeaturePoints</span></code>. Die Funktion erhaelt das aktuelle
+Grauwertbild. Rufen Sie <code class="docutils literal notranslate"><span class="pre">cv2.goodFeaturesToTrack</span></code> mit diesem Bild auf und
+uebergeben Sie die bereits vorbereiteten Parameter <code class="docutils literal notranslate"><span class="pre">FEATURE_PARAMS</span></code>.</p>
+<p>Die Funktion soll die OpenCV-Rueckgabe unveraendert zurueckgeben. Diese ist
+entweder <code class="docutils literal notranslate"><span class="pre">None</span></code> oder ein Array der Form <span class="math notranslate nohighlight">\(N \times 1 \times 2\)</span>.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Loesung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">goodFeaturesToTrack</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="o">**</span><span class="n">FEATURE_PARAMS</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-3-punkte-mit-klt-tracken">
+<h2><strong>Aufgabe 3</strong>: Punkte mit KLT tracken<a class="headerlink" href="#aufgabe-3-punkte-mit-klt-tracken" title="Link to this heading"></a></h2>
+<p>Implementieren Sie <code class="docutils literal notranslate"><span class="pre">trackFeaturePoints</span></code>. Die Funktion erhaelt das vorherige
+Grauwertbild, das aktuelle Grauwertbild und die Punkte aus dem vorherigen Bild.</p>
+<p>Falls keine Punkte vorhanden sind, geben Sie <code class="docutils literal notranslate"><span class="pre">None,</span> <span class="pre">None,</span> <span class="pre">None</span></code> zurueck.
+Andernfalls rufen Sie <code class="docutils literal notranslate"><span class="pre">cv2.calcOpticalFlowPyrLK</span></code> auf. Uebergeben Sie:</p>
+<ul class="simple">
+<li><p>das vorherige Grauwertbild,</p></li>
+<li><p>das aktuelle Grauwertbild,</p></li>
+<li><p>die vorherigen Punkte,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> als Platzhalter fuer die neuen Punkte,</p></li>
+<li><p>die vorbereiteten Parameter <code class="docutils literal notranslate"><span class="pre">LK_PARAMS</span></code>.</p></li>
+</ul>
+<p>Geben Sie alle drei OpenCV-Rueckgabewerte zurueck: neue Punktpositionen,
+Status-Flags und Fehlerwerte.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Loesung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">previousPoints</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">previousPoints</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+<span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">calcOpticalFlowPyrLK</span><span class="p">(</span>
+    <span class="n">previousGray</span><span class="p">,</span>
+    <span class="n">gray</span><span class="p">,</span>
+    <span class="n">previousPoints</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">LK_PARAMS</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-4-nur-erfolgreiche-tracks-behalten">
+<h2><strong>Aufgabe 4</strong>: Nur erfolgreiche Tracks behalten<a class="headerlink" href="#aufgabe-4-nur-erfolgreiche-tracks-behalten" title="Link to this heading"></a></h2>
+<p>Implementieren Sie <code class="docutils literal notranslate"><span class="pre">keepGoodTracks</span></code>. OpenCV liefert fuer jeden Punkt ein
+<code class="docutils literal notranslate"><span class="pre">status</span></code>-Flag. Ein Wert von <code class="docutils literal notranslate"><span class="pre">1</span></code> bedeutet, dass der Punkt erfolgreich
+getrackt wurde. Ein Wert von <code class="docutils literal notranslate"><span class="pre">0</span></code> bedeutet, dass der Track verworfen werden
+soll.</p>
+<p>Wenn <code class="docutils literal notranslate"><span class="pre">currentPoints</span></code> oder <code class="docutils literal notranslate"><span class="pre">status</span></code> den Wert <code class="docutils literal notranslate"><span class="pre">None</span></code> haben, geben Sie zwei
+leere Arrays der Form <span class="math notranslate nohighlight">\(0 \times 2\)</span> zurueck. Andernfalls wandeln Sie
+<code class="docutils literal notranslate"><span class="pre">status</span></code> in eine boolesche Maske um, selektieren damit die erfolgreichen
+alten und neuen Punktpositionen und geben beide Arrays mit der Form
+<span class="math notranslate nohighlight">\(M \times 2\)</span> zurueck.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Loesung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">currentPoints</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">empty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">empty</span><span class="p">,</span> <span class="n">empty</span>
+
+<span class="n">good</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+<span class="n">goodPrevious</span> <span class="o">=</span> <span class="n">previousPoints</span><span class="p">[</span><span class="n">good</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">goodCurrent</span> <span class="o">=</span> <span class="n">currentPoints</span><span class="p">[</span><span class="n">good</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="k">return</span> <span class="n">goodPrevious</span><span class="p">,</span> <span class="n">goodCurrent</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="experimentieren">
+<h2>Experimentieren<a class="headerlink" href="#experimentieren" title="Link to this heading"></a></h2>
+<p>Variieren Sie die Parameter und beobachten Sie die Wirkung:</p>
+<ul class="simple">
+<li><p>Erhoehen Sie <code class="docutils literal notranslate"><span class="pre">qualityLevel</span></code>, um nur sehr starke Ecken zu tracken.</p></li>
+<li><p>Erhoehen Sie <code class="docutils literal notranslate"><span class="pre">minDistance</span></code>, um die Punkte gleichmaessiger im Bild zu
+verteilen.</p></li>
+<li><p>Vergroessern Sie <code class="docutils literal notranslate"><span class="pre">winSize</span></code>, wenn die Tracks bei etwas Rauschen instabil
+werden.</p></li>
+<li><p>Erhoehen Sie <code class="docutils literal notranslate"><span class="pre">maxLevel</span></code>, wenn Sie groessere Bewegungen verfolgen moechten.</p></li>
+</ul>
+</section>
+<section id="klt-optischer-fluss-musterloesung">
+<h2>KLT Optischer Fluss - Musterloesung<a class="headerlink" href="#klt-optischer-fluss-musterloesung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="source.html"><span class="doc">KLT Optischer Fluss - Musterloesung</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../harris/good_features.html" class="btn btn-neutral float-left" title="Good Features To Track" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../YOLO/index.html" class="btn btn-neutral float-right" title="Objekterkennung mit YOLO" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

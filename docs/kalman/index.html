@@ -86,6 +86,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#kalman.KalmanFilter.update"><code class="docutils literal notranslate"><span class="pre">KalmanFilter.update()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#die-simulation-starten">Die Simulation starten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variationen">Variationen</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
 </ul>
 </li>
@@ -488,6 +490,60 @@ Otherwise, computes the Kalman gain, updates the state estimate and covariance m
 </section>
 </dd></dl>
 
+</section>
+<section id="die-simulation-starten">
+<h2>Die Simulation starten<a class="headerlink" href="#die-simulation-starten" title="Link to this heading"></a></h2>
+<p>Um ihr Kalman-Filter zu testen, müssen Sie die Simulation starten.
+Führen Sie dazu im Verzeichnis <cite>kalman</cite> den Befehl</p>
+<blockquote>
+<div><p>python kalman.py</p>
+</div></blockquote>
+<p>aus. Dies startet die Simulation und zeigt die Ergebnisse an.</p>
+<p>Die Simulation zeigt die Bewegung eines Objekts in 2D,
+wobei das Kalman-Filter die Position und Geschwindigkeit schätzt.</p>
+<p>Im Hauptfenster sehen Sie die Position des Objekts, die durch das Kalman-Filter geschätzt wird (grau),
+sowie die tatsächliche Position (rot) und die Messungen (blau).</p>
+<a class="reference internal image-reference" href="../_images/simulation1.png"><img alt="Kalman-Filter Simulation (Position)" class="align-center" src="../_images/simulation1.png" style="width: 800px;" />
+</a>
+<p>Im Fenster „Geschwindigkeit“ sehen Sie die geschätzte Geschwindigkeit des Objekts (grün).</p>
+<a class="reference internal image-reference" href="../_images/velocity1.png"><img alt="Kalman-Filter Simulation (Geschwindigkeit)" class="align-center" src="../_images/velocity1.png" style="width: 800px;" />
+</a>
+<p>Sie können die Simulation durch Drücken der Leertaste pausieren und fortsetzen.
+Sie können auch die Simulation beenden, indem Sie das Fenster schließen oder die Escape-Taste drücken.
+Durch drücken der Taste „+“ oder „-“ können Sie einzelne Schritte vorwärts oder oder rückwärts gehen.
+Im Menü des Hauptfenster können Sie zusätzliche Visualisierungen aktivieren,
+um die Funktionsweise des Kalman-Filters besser zu verstehen.</p>
+</section>
+<section id="variationen">
+<h2>Variationen<a class="headerlink" href="#variationen" title="Link to this heading"></a></h2>
+<p>In der Standarausführung gibt es einen Sensor, der die Position des Objekts misst.
+Es wird ein GPS-Sensor simuliert, der die Position des Objekts in 2D misst.
+Dieser Sensor hat eine niedrige Positionsgenauigkeit, fällt dafür aber nur sehr selten aus.
+Sie können diese Einstellungen anpassen um zu experimentieren. Öffnen Sie dazu die Datei <cite>config.yml</cite> und passen Sie
+die Sektion <cite>sensor</cite> an.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">sensors</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GPS</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">  </span><span class="nt">stdX</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5.0</span><span class="w"> </span><span class="c1"># Unit: meters</span>
+<span class="w">  </span><span class="nt">stdY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5.0</span><span class="w"> </span><span class="c1"># Unit: meters</span>
+<span class="w">  </span><span class="nt">correlation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span><span class="w"> </span><span class="c1"># between -1 and 1</span>
+<span class="w">  </span><span class="nt">missChance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span>
+<span class="w">  </span><span class="nt">missLength</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+</pre></div>
+</div>
+<p>Sie können auch weitere Sensoren hinzufügen mit anderen Eigenschaften.
+Alternativ können Sie auch weitere vorkonfigurierte Szenarien ausprobieren,
+indem Sie das Programm mit einer anderen Konfigurationsdatei starten. Führen Sie dazu den Befehl</p>
+<blockquote>
+<div><p>python kalman.py –cfg config_dgps.yaml</p>
+</div></blockquote>
+<p>aus. Es gibt verschiedene Konfigurationen, die Sie ausprobieren können:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>config_dgps.yml             # Zwei Sensoren: Differential GPS mit hoher Genauigkeit plus normales GPS
+config_radar1.yml           # Ein einzelner Radar
+config_multiple_radars.yml  # Mehrere Radarsensoren
+config_full.yml             # GPS, dGPS plus 4 Radarsensoren
+</pre></div>
+</div>
 </section>
 <section id="musterlosung">
 <h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>

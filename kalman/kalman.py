@@ -218,7 +218,7 @@ class KalmanFilter(Module):
               self.update(z, R)
 
             # If the filter has not been initialized yet, we set the prediction and priorCov to the current state and covariance
-            if self.prediction is None and self.priorCov is None:
+            if self.prediction is None and self.priorCov is None and self.X is not None:
                 self.prediction = self.X.copy()
                 self.priorCov = self.P.copy()
 

@@ -15,6 +15,14 @@ sensors:
     stdX: 5.0 # Unit: meters
     stdY: 5.0 # Unit: meters
     correlation: 0.0 # between -1 and 1
-    missChance: 0.05
+    missChance: 0.01
     missLength: 5
+  - name: dGPS
+    type: global
+    stdX: 1.0 # Unit: meters
+    stdY: 1.0 # Unit: meters
+    correlation: 0.0 # between -1 and 1
+    missChance: 0.25
+    missLength: 10
+
 

@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KLT Optischer Fluss - Musterloesung &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/opticalflow/source.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/good_features.html">Good Features To Track</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Optischer Fluss mit KLT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">KLT Optischer Fluss - Musterloesung</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/opticalflow/source.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="klt-optischer-fluss-musterloesung">
+<h1>KLT Optischer Fluss - Musterloesung<a class="headerlink" href="#klt-optischer-fluss-musterloesung" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  3</span>
+<span class="linenos">  4</span>
+<span class="linenos">  5</span><span class="c1"># One shared window name makes it easy to find the camera output again.</span>
+<span class="linenos">  6</span><span class="n">WINDOW_NAME</span> <span class="o">=</span> <span class="s2">&quot;KLT Optical Flow&quot;</span>
+<span class="linenos">  7</span>
+<span class="linenos">  8</span><span class="c1"># If fewer than this many points are left, we detect a fresh set of corners.</span>
+<span class="linenos">  9</span><span class="c1"># This keeps the demo useful even when the tracked object leaves the image.</span>
+<span class="linenos"> 10</span><span class="n">MIN_TRACKS</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="linenos"> 11</span>
+<span class="linenos"> 12</span><span class="c1"># Parameters for cv2.goodFeaturesToTrack. KLT works best on image patches that</span>
+<span class="linenos"> 13</span><span class="c1"># contain visible structure in both directions, therefore we track corners.</span>
+<span class="linenos"> 14</span><span class="n">FEATURE_PARAMS</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+<span class="linenos"> 15</span>    <span class="c1"># Track at most this many points. A small number keeps the visualization</span>
+<span class="linenos"> 16</span>    <span class="c1"># readable and makes the algorithm fast enough for a webcam demo.</span>
+<span class="linenos"> 17</span>    <span class="n">maxCorners</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="linenos"> 18</span>    <span class="c1"># Keep points whose corner quality is at least 1 percent of the best</span>
+<span class="linenos"> 19</span>    <span class="c1"># detected corner. Raising this value keeps only very strong corners.</span>
+<span class="linenos"> 20</span>    <span class="n">qualityLevel</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+<span class="linenos"> 21</span>    <span class="c1"># Keep detected points separated by at least this many pixels. Without this,</span>
+<span class="linenos"> 22</span>    <span class="c1"># many points can cluster on the same textured area.</span>
+<span class="linenos"> 23</span>    <span class="n">minDistance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="linenos"> 24</span>    <span class="c1"># Size of the local neighborhood used for the corner score.</span>
+<span class="linenos"> 25</span>    <span class="n">blockSize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+<span class="linenos"> 26</span><span class="p">)</span>
+<span class="linenos"> 27</span>
+<span class="linenos"> 28</span><span class="c1"># Parameters for cv2.calcOpticalFlowPyrLK. OpenCV implements the pyramidal</span>
+<span class="linenos"> 29</span><span class="c1"># Lucas-Kanade tracker, which can follow motions larger than a few pixels.</span>
+<span class="linenos"> 30</span><span class="n">LK_PARAMS</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+<span class="linenos"> 31</span>    <span class="c1"># The tracker compares a small window around each point. A larger window is</span>
+<span class="linenos"> 32</span>    <span class="c1"># more stable, but also assumes the same motion over a larger image region.</span>
+<span class="linenos"> 33</span>    <span class="n">winSize</span><span class="o">=</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span>
+<span class="linenos"> 34</span>    <span class="c1"># Number of pyramid levels. 0 means only the original image. 3 means the</span>
+<span class="linenos"> 35</span>    <span class="c1"># original image plus three smaller versions.</span>
+<span class="linenos"> 36</span>    <span class="n">maxLevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="linenos"> 37</span>    <span class="c1"># Stop after at most 30 iterations, or earlier when the point update is</span>
+<span class="linenos"> 38</span>    <span class="c1"># smaller than epsilon. This is the standard OpenCV stopping criterion.</span>
+<span class="linenos"> 39</span>    <span class="n">criteria</span><span class="o">=</span><span class="p">(</span>
+<span class="linenos"> 40</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_EPS</span> <span class="o">|</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_COUNT</span><span class="p">,</span>
+<span class="linenos"> 41</span>        <span class="mi">30</span><span class="p">,</span>
+<span class="linenos"> 42</span>        <span class="mf">0.01</span><span class="p">,</span>
+<span class="linenos"> 43</span>    <span class="p">),</span>
+<span class="linenos"> 44</span><span class="p">)</span>
+<span class="linenos"> 45</span>
+<span class="linenos"> 46</span><span class="c1"># Keyboard controls used in the main loop.</span>
+<span class="linenos"> 47</span><span class="n">RESET_KEY</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="linenos"> 48</span><span class="n">QUIT_KEYS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">27</span><span class="p">,</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)}</span>  <span class="c1"># 27 is the ESC key.</span>
+<span class="linenos"> 49</span>
+<span class="linenos"> 50</span>
+<span class="linenos"> 51</span><span class="k">def</span><span class="w"> </span><span class="nf">toGray</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<span class="linenos"> 52</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 53</span><span class="sd">    Convert one camera frame to a grayscale image.</span>
+<span class="linenos"> 54</span>
+<span class="linenos"> 55</span><span class="sd">    The camera frame delivered by OpenCV has three color channels in BGR order.</span>
+<span class="linenos"> 56</span><span class="sd">    Both goodFeaturesToTrack and calcOpticalFlowPyrLK operate on single-channel</span>
+<span class="linenos"> 57</span><span class="sd">    images, therefore we use a grayscale version for the actual computation.</span>
+<span class="linenos"> 58</span>
+<span class="linenos"> 59</span><span class="sd">    Args:</span>
+<span class="linenos"> 60</span><span class="sd">        frame (np.ndarray): BGR camera image.</span>
+<span class="linenos"> 61</span>
+<span class="linenos"> 62</span><span class="sd">    Returns:</span>
+<span class="linenos"> 63</span><span class="sd">        np.ndarray: Grayscale image with the same width and height.</span>
+<span class="linenos"> 64</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 65</span>    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+<span class="linenos"> 66</span>
+<span class="linenos"> 67</span>
+<span class="linenos"> 68</span><span class="k">def</span><span class="w"> </span><span class="nf">detectFeaturePoints</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
+<span class="linenos"> 69</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 70</span><span class="sd">    Detect good points that can be tracked by KLT.</span>
+<span class="linenos"> 71</span>
+<span class="linenos"> 72</span><span class="sd">    We use Shi-Tomasi corners via cv2.goodFeaturesToTrack. These are exactly</span>
+<span class="linenos"> 73</span><span class="sd">    the kind of points where the 2x2 KLT equation system is well-conditioned:</span>
+<span class="linenos"> 74</span><span class="sd">    the image patch changes clearly in both x- and y-direction.</span>
+<span class="linenos"> 75</span>
+<span class="linenos"> 76</span><span class="sd">    Args:</span>
+<span class="linenos"> 77</span><span class="sd">        gray (np.ndarray): Current grayscale image.</span>
+<span class="linenos"> 78</span>
+<span class="linenos"> 79</span><span class="sd">    Returns:</span>
+<span class="linenos"> 80</span><span class="sd">        np.ndarray | None: Points with shape (N, 1, 2), or None if no useful</span>
+<span class="linenos"> 81</span><span class="sd">        corners were found.</span>
+<span class="linenos"> 82</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 83</span>    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">goodFeaturesToTrack</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="o">**</span><span class="n">FEATURE_PARAMS</span><span class="p">)</span>
+<span class="linenos"> 84</span>
+<span class="linenos"> 85</span>
+<span class="linenos"> 86</span><span class="k">def</span><span class="w"> </span><span class="nf">trackFeaturePoints</span><span class="p">(</span><span class="n">previousGray</span><span class="p">,</span> <span class="n">gray</span><span class="p">,</span> <span class="n">previousPoints</span><span class="p">):</span>
+<span class="linenos"> 87</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 88</span><span class="sd">    Track points from the previous frame into the current frame.</span>
+<span class="linenos"> 89</span>
+<span class="linenos"> 90</span><span class="sd">    cv2.calcOpticalFlowPyrLK receives the previous image, the current image and</span>
+<span class="linenos"> 91</span><span class="sd">    the points in the previous image. For each point it estimates where the same</span>
+<span class="linenos"> 92</span><span class="sd">    image patch moved in the current image.</span>
+<span class="linenos"> 93</span>
+<span class="linenos"> 94</span><span class="sd">    Args:</span>
+<span class="linenos"> 95</span><span class="sd">        previousGray (np.ndarray): Grayscale image from the last time step.</span>
+<span class="linenos"> 96</span><span class="sd">        gray (np.ndarray): Grayscale image from the current time step.</span>
+<span class="linenos"> 97</span><span class="sd">        previousPoints (np.ndarray | None): Points from the previous image with</span>
+<span class="linenos"> 98</span><span class="sd">        shape (N, 1, 2).</span>
+<span class="linenos"> 99</span>
+<span class="linenos">100</span><span class="sd">    Returns:</span>
+<span class="linenos">101</span><span class="sd">        tuple: (currentPoints, status, error) as returned by OpenCV. If there</span>
+<span class="linenos">102</span><span class="sd">        are no points to track, all three entries are None.</span>
+<span class="linenos">103</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">104</span>    <span class="k">if</span> <span class="n">previousPoints</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">previousPoints</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">105</span>        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+<span class="linenos">106</span>
+<span class="linenos">107</span>    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">calcOpticalFlowPyrLK</span><span class="p">(</span>
+<span class="linenos">108</span>        <span class="n">previousGray</span><span class="p">,</span>
+<span class="linenos">109</span>        <span class="n">gray</span><span class="p">,</span>
+<span class="linenos">110</span>        <span class="n">previousPoints</span><span class="p">,</span>
+<span class="linenos">111</span>        <span class="kc">None</span><span class="p">,</span>
+<span class="linenos">112</span>        <span class="o">**</span><span class="n">LK_PARAMS</span><span class="p">,</span>
+<span class="linenos">113</span>    <span class="p">)</span>
+<span class="linenos">114</span>
+<span class="linenos">115</span>
+<span class="linenos">116</span><span class="k">def</span><span class="w"> </span><span class="nf">keepGoodTracks</span><span class="p">(</span><span class="n">previousPoints</span><span class="p">,</span> <span class="n">currentPoints</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+<span class="linenos">117</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">118</span><span class="sd">    Keep only tracks that OpenCV marked as successful.</span>
+<span class="linenos">119</span>
+<span class="linenos">120</span><span class="sd">    The Lucas-Kanade tracker returns a status value for every input point.</span>
+<span class="linenos">121</span><span class="sd">    status == 1 means a plausible corresponding point was found. status == 0</span>
+<span class="linenos">122</span><span class="sd">    means tracking failed, for example because the point left the image or the</span>
+<span class="linenos">123</span><span class="sd">    local patch no longer matches.</span>
+<span class="linenos">124</span>
+<span class="linenos">125</span><span class="sd">    Args:</span>
+<span class="linenos">126</span><span class="sd">        previousPoints (np.ndarray): Points in the previous image.</span>
+<span class="linenos">127</span><span class="sd">        currentPoints (np.ndarray | None): Tracked points in the current image.</span>
+<span class="linenos">128</span><span class="sd">        status (np.ndarray | None): Success flag for every point.</span>
+<span class="linenos">129</span>
+<span class="linenos">130</span><span class="sd">    Returns:</span>
+<span class="linenos">131</span><span class="sd">        tuple[np.ndarray, np.ndarray]: Matching arrays with shape (M, 2):</span>
+<span class="linenos">132</span><span class="sd">        successful previous points and their successful current positions.</span>
+<span class="linenos">133</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">134</span>    <span class="k">if</span> <span class="n">currentPoints</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">135</span>        <span class="n">empty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">136</span>        <span class="k">return</span> <span class="n">empty</span><span class="p">,</span> <span class="n">empty</span>
+<span class="linenos">137</span>
+<span class="linenos">138</span>    <span class="n">good</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+<span class="linenos">139</span>    <span class="n">goodPrevious</span> <span class="o">=</span> <span class="n">previousPoints</span><span class="p">[</span><span class="n">good</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">140</span>    <span class="n">goodCurrent</span> <span class="o">=</span> <span class="n">currentPoints</span><span class="p">[</span><span class="n">good</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">141</span>
+<span class="linenos">142</span>    <span class="k">return</span> <span class="n">goodPrevious</span><span class="p">,</span> <span class="n">goodCurrent</span>
+<span class="linenos">143</span>
+<span class="linenos">144</span>
+<span class="linenos">145</span><span class="k">def</span><span class="w"> </span><span class="nf">drawTracks</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">previousPoints</span><span class="p">,</span> <span class="n">currentPoints</span><span class="p">):</span>
+<span class="linenos">146</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">147</span><span class="sd">    Draw the optical flow vectors on top of the live camera image.</span>
+<span class="linenos">148</span>
+<span class="linenos">149</span><span class="sd">    The variable tracks is a persistent image. Every new motion segment is drawn</span>
+<span class="linenos">150</span><span class="sd">    into this image, so older paths remain visible. The current feature</span>
+<span class="linenos">151</span><span class="sd">    positions are drawn onto a copy of the current camera frame.</span>
+<span class="linenos">152</span>
+<span class="linenos">153</span><span class="sd">    Args:</span>
+<span class="linenos">154</span><span class="sd">        frame (np.ndarray): Current BGR camera image.</span>
+<span class="linenos">155</span><span class="sd">        tracks (np.ndarray): Persistent BGR image containing old line segments.</span>
+<span class="linenos">156</span><span class="sd">        previousPoints (np.ndarray): Successful point locations in the previous</span>
+<span class="linenos">157</span><span class="sd">        frame with shape (M, 2).</span>
+<span class="linenos">158</span><span class="sd">        currentPoints (np.ndarray): Successful point locations in the current</span>
+<span class="linenos">159</span><span class="sd">        frame with shape (M, 2).</span>
+<span class="linenos">160</span>
+<span class="linenos">161</span><span class="sd">    Returns:</span>
+<span class="linenos">162</span><span class="sd">        np.ndarray: Camera image with accumulated flow lines and current points.</span>
+<span class="linenos">163</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">164</span>    <span class="n">overlay</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos">165</span>
+<span class="linenos">166</span>    <span class="k">for</span> <span class="n">previousPoint</span><span class="p">,</span> <span class="n">currentPoint</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">previousPoints</span><span class="p">,</span> <span class="n">currentPoints</span><span class="p">):</span>
+<span class="linenos">167</span>        <span class="n">oldX</span><span class="p">,</span> <span class="n">oldY</span> <span class="o">=</span> <span class="n">previousPoint</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="linenos">168</span>        <span class="n">newX</span><span class="p">,</span> <span class="n">newY</span> <span class="o">=</span> <span class="n">currentPoint</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="linenos">169</span>
+<span class="linenos">170</span>        <span class="n">oldPosition</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">oldX</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">oldY</span><span class="p">))</span>
+<span class="linenos">171</span>        <span class="n">newPosition</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">newX</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">newY</span><span class="p">))</span>
+<span class="linenos">172</span>
+<span class="linenos">173</span>        <span class="c1"># Green lines show where a point came from.</span>
+<span class="linenos">174</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">oldPosition</span><span class="p">,</span> <span class="n">newPosition</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">175</span>
+<span class="linenos">176</span>        <span class="c1"># Red circles show the current point positions.</span>
+<span class="linenos">177</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">overlay</span><span class="p">,</span> <span class="n">newPosition</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">178</span>
+<span class="linenos">179</span>    <span class="c1"># Add the persistent track image to the current frame.</span>
+<span class="linenos">180</span>    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">overlay</span><span class="p">,</span> <span class="n">tracks</span><span class="p">)</span>
+<span class="linenos">181</span>
+<span class="linenos">182</span>
+<span class="linenos">183</span><span class="k">def</span><span class="w"> </span><span class="nf">drawStatus</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">trackCount</span><span class="p">):</span>
+<span class="linenos">184</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">185</span><span class="sd">    Draw a small status text into the output image.</span>
+<span class="linenos">186</span>
+<span class="linenos">187</span><span class="sd">    This is not part of the algorithm. It only helps during experimentation:</span>
+<span class="linenos">188</span><span class="sd">    students can immediately see how many points are still being tracked.</span>
+<span class="linenos">189</span>
+<span class="linenos">190</span><span class="sd">    Args:</span>
+<span class="linenos">191</span><span class="sd">        frame (np.ndarray): Output image that will be modified in-place.</span>
+<span class="linenos">192</span><span class="sd">        trackCount (int): Number of currently successful tracks.</span>
+<span class="linenos">193</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">194</span>    <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tracks: </span><span class="si">{</span><span class="n">trackCount</span><span class="si">}</span><span class="s2">   r: reset   ESC/q: quit&quot;</span>
+<span class="linenos">195</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span>
+<span class="linenos">196</span>        <span class="n">frame</span><span class="p">,</span>
+<span class="linenos">197</span>        <span class="n">text</span><span class="p">,</span>
+<span class="linenos">198</span>        <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span>
+<span class="linenos">199</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span>
+<span class="linenos">200</span>        <span class="mf">0.7</span><span class="p">,</span>
+<span class="linenos">201</span>        <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+<span class="linenos">202</span>        <span class="mi">2</span><span class="p">,</span>
+<span class="linenos">203</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">,</span>
+<span class="linenos">204</span>    <span class="p">)</span>
+<span class="linenos">205</span>
+<span class="linenos">206</span>
+<span class="linenos">207</span><span class="k">def</span><span class="w"> </span><span class="nf">mainLoop</span><span class="p">():</span>
+<span class="linenos">208</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">209</span><span class="sd">    Open the webcam and run the KLT tracker until the user quits.</span>
+<span class="linenos">210</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">211</span>    <span class="n">cam</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">212</span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">cam</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+<span class="linenos">213</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot open camera&quot;</span><span class="p">)</span>
+<span class="linenos">214</span>        <span class="k">return</span>
+<span class="linenos">215</span>
+<span class="linenos">216</span>    <span class="c1"># Read one frame before the loop. KLT always compares two neighboring</span>
+<span class="linenos">217</span>    <span class="c1"># images, therefore we need an initial &quot;previous&quot; image.</span>
+<span class="linenos">218</span>    <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos">219</span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+<span class="linenos">220</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot read first camera image&quot;</span><span class="p">)</span>
+<span class="linenos">221</span>        <span class="n">cam</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="linenos">222</span>        <span class="k">return</span>
+<span class="linenos">223</span>
+<span class="linenos">224</span>    <span class="n">previousGray</span> <span class="o">=</span> <span class="n">toGray</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="linenos">225</span>    <span class="n">previousPoints</span> <span class="o">=</span> <span class="n">detectFeaturePoints</span><span class="p">(</span><span class="n">previousGray</span><span class="p">)</span>
+<span class="linenos">226</span>
+<span class="linenos">227</span>    <span class="c1"># The track image has the same size as the camera frame. It starts black and</span>
+<span class="linenos">228</span>    <span class="c1"># stores the accumulated green motion lines.</span>
+<span class="linenos">229</span>    <span class="n">tracks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="linenos">230</span>
+<span class="linenos">231</span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="linenos">232</span>        <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos">233</span>        <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+<span class="linenos">234</span>            <span class="k">break</span>
+<span class="linenos">235</span>
+<span class="linenos">236</span>        <span class="n">gray</span> <span class="o">=</span> <span class="n">toGray</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="linenos">237</span>
+<span class="linenos">238</span>        <span class="n">currentPoints</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">trackFeaturePoints</span><span class="p">(</span>
+<span class="linenos">239</span>            <span class="n">previousGray</span><span class="p">,</span>
+<span class="linenos">240</span>            <span class="n">gray</span><span class="p">,</span>
+<span class="linenos">241</span>            <span class="n">previousPoints</span><span class="p">,</span>
+<span class="linenos">242</span>        <span class="p">)</span>
+<span class="linenos">243</span>        <span class="n">goodPrevious</span><span class="p">,</span> <span class="n">goodCurrent</span> <span class="o">=</span> <span class="n">keepGoodTracks</span><span class="p">(</span>
+<span class="linenos">244</span>            <span class="n">previousPoints</span><span class="p">,</span>
+<span class="linenos">245</span>            <span class="n">currentPoints</span><span class="p">,</span>
+<span class="linenos">246</span>            <span class="n">status</span><span class="p">,</span>
+<span class="linenos">247</span>        <span class="p">)</span>
+<span class="linenos">248</span>
+<span class="linenos">249</span>        <span class="n">output</span> <span class="o">=</span> <span class="n">drawTracks</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">goodPrevious</span><span class="p">,</span> <span class="n">goodCurrent</span><span class="p">)</span>
+<span class="linenos">250</span>        <span class="n">drawStatus</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">goodCurrent</span><span class="p">))</span>
+<span class="linenos">251</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">WINDOW_NAME</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<span class="linenos">252</span>
+<span class="linenos">253</span>        <span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+<span class="linenos">254</span>        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">QUIT_KEYS</span><span class="p">:</span>
+<span class="linenos">255</span>            <span class="k">break</span>
+<span class="linenos">256</span>
+<span class="linenos">257</span>        <span class="c1"># Redetect points when the user asks for it or when too few tracks are</span>
+<span class="linenos">258</span>        <span class="c1"># left. We also clear the path image so old and new tracks do not mix.</span>
+<span class="linenos">259</span>        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">RESET_KEY</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">goodCurrent</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">MIN_TRACKS</span><span class="p">:</span>
+<span class="linenos">260</span>            <span class="n">tracks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="linenos">261</span>            <span class="n">previousGray</span> <span class="o">=</span> <span class="n">gray</span>
+<span class="linenos">262</span>            <span class="n">previousPoints</span> <span class="o">=</span> <span class="n">detectFeaturePoints</span><span class="p">(</span><span class="n">previousGray</span><span class="p">)</span>
+<span class="linenos">263</span>            <span class="k">continue</span>
+<span class="linenos">264</span>
+<span class="linenos">265</span>        <span class="c1"># The current frame becomes the previous frame for the next iteration.</span>
+<span class="linenos">266</span>        <span class="c1"># OpenCV expects the points again in shape (N, 1, 2).</span>
+<span class="linenos">267</span>        <span class="n">previousGray</span> <span class="o">=</span> <span class="n">gray</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos">268</span>        <span class="n">previousPoints</span> <span class="o">=</span> <span class="n">goodCurrent</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">269</span>
+<span class="linenos">270</span>    <span class="n">cam</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="linenos">271</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
+<span class="linenos">272</span>
+<span class="linenos">273</span>
+<span class="linenos">274</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">275</span>    <span class="n">mainLoop</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

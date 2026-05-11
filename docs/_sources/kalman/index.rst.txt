@@ -166,7 +166,7 @@ Auch wenn die Initialisierung ungenau ist, konvergiert das Kalman-Filter bei hin
 
 
 **Beispiel**: 1-dimensionales Kalman-Filter
----------------------------------------
+-------------------------------------------
 
 Dieses Beispiel zeigt die Funktionsweise des Kalman-Filters in einem einfachen 1D-Szenario, in dem der Zustand die Position eines sich gleichförmig bewegenden Objekts beschreibt. Wir nehmen an:
 
@@ -378,6 +378,74 @@ Anweisungen im Code sowie dieser Beschreibung.
 
 .. automethod:: kalman.KalmanFilter.update
 
+Die Simulation starten
+----------------------
+
+Um ihr Kalman-Filter zu testen, müssen Sie die Simulation starten.
+Führen Sie dazu im Verzeichnis `kalman` den Befehl
+
+      python kalman.py  
+
+aus. Dies startet die Simulation und zeigt die Ergebnisse an.
+
+Die Simulation zeigt die Bewegung eines Objekts in 2D, 
+wobei das Kalman-Filter die Position und Geschwindigkeit schätzt. 
+
+Im Hauptfenster sehen Sie die Position des Objekts, die durch das Kalman-Filter geschätzt wird (grau), 
+sowie die tatsächliche Position (rot) und die Messungen (blau).
+
+.. image:: simulation1.png
+   :width: 800px
+   :align: center
+   :alt: Kalman-Filter Simulation (Position)
+
+Im Fenster "Geschwindigkeit" sehen Sie die geschätzte Geschwindigkeit des Objekts (grün).
+
+.. image:: velocity1.png
+   :width: 800px
+   :align: center
+   :alt: Kalman-Filter Simulation (Geschwindigkeit)
+
+Sie können die Simulation durch Drücken der Leertaste pausieren und fortsetzen.
+Sie können auch die Simulation beenden, indem Sie das Fenster schließen oder die Escape-Taste drücken.
+Durch drücken der Taste "+" oder "-" können Sie einzelne Schritte vorwärts oder oder rückwärts gehen.   
+Im Menü des Hauptfenster können Sie zusätzliche Visualisierungen aktivieren, 
+um die Funktionsweise des Kalman-Filters besser zu verstehen.
+
+Variationen
+-----------
+
+In der Standarausführung gibt es einen Sensor, der die Position des Objekts misst.
+Es wird ein GPS-Sensor simuliert, der die Position des Objekts in 2D misst.
+Dieser Sensor hat eine niedrige Positionsgenauigkeit, fällt dafür aber nur sehr selten aus.
+Sie können diese Einstellungen anpassen um zu experimentieren. Öffnen Sie dazu die Datei `config.yml` und passen Sie
+die Sektion `sensor` an.
+
+.. code-block:: yaml  
+      
+      sensors:
+      - name: GPS
+        type: global
+        stdX: 5.0 # Unit: meters
+        stdY: 5.0 # Unit: meters
+        correlation: 0.0 # between -1 and 1
+        missChance: 0.05
+        missLength: 5
+
+Sie können auch weitere Sensoren hinzufügen mit anderen Eigenschaften.
+Alternativ können Sie auch weitere vorkonfigurierte Szenarien ausprobieren, 
+indem Sie das Programm mit einer anderen Konfigurationsdatei starten. Führen Sie dazu den Befehl
+
+      python kalman.py --cfg config_dgps.yaml
+
+aus. Es gibt verschiedene Konfigurationen, die Sie ausprobieren können:
+
+.. code-block:: text
+
+    config_dgps.yml             # Zwei Sensoren: Differential GPS mit hoher Genauigkeit plus normales GPS
+    config_radar1.yml           # Ein einzelner Radar
+    config_multiple_radars.yml  # Mehrere Radarsensoren
+    config_full.yml             # GPS, dGPS plus 4 Radarsensoren
 
 Musterlösung
 ------------

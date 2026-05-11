@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Good Features To Track &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/harris/good_features.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Objekterkennung mit YOLO" href="../YOLO/index.html" />
+    <link rel="prev" title="Der Harris Eckendetektor" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Good Features To Track</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#theorie">Theorie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#der-code">Der Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1-das-bild-in-graustufen-umwandeln"><strong>Aufgabe 1</strong>: Das Bild in Graustufen umwandeln</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-2-gute-ecken-finden"><strong>Aufgabe 2</strong>: Gute Ecken finden</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-3-die-gefundenen-ecken-einzeichnen"><strong>Aufgabe 3</strong>: Die gefundenen Ecken einzeichnen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-4-die-webcam-offnen-und-das-ergebnis-anzeigen"><strong>Aufgabe 4</strong>: Die Webcam öffnen und das Ergebnis anzeigen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experimentieren">Experimentieren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#good-features-to-track-musterlosung">Good Features To Track - Musterlösung</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Good Features To Track</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/harris/good_features.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="good-features-to-track">
+<span id="good-features"></span><h1>Good Features To Track<a class="headerlink" href="#good-features-to-track" title="Link to this heading"></a></h1>
+<p>In diesem Praktikum verwenden wir die OpenCV-Funktion
+<a class="reference external" href="https://docs.opencv.org/4.x/dd/d1a/group__imgproc__feature.html#ga4055896d9ef77dd3cacf2c5f60e13f1">cv2.goodFeaturesToTrack</a>,
+um starke und gut voneinander getrennte Ecken in einem Kamerabild zu finden.
+Die Funktion baut auf derselben Grundidee wie der Harris-Eckendetektor auf,
+nimmt uns aber die Berechnung der Eckenstärke, die Schwellwertbildung und die
+Auswahl lokaler Maxima ab.</p>
+<section id="theorie">
+<h2>Theorie<a class="headerlink" href="#theorie" title="Link to this heading"></a></h2>
+<p>Für jeden Bildpunkt wird lokal der Strukturtensor</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}M =
+\sum_{(x_k,y_k)\in W}
+\begin{pmatrix}
+    I_x^2 &amp; I_x I_y\\
+    I_x I_y &amp; I_y^2
+\end{pmatrix}\end{split}\]</div>
+<p>betrachtet. Seine Eigenwerte <span class="math notranslate nohighlight">\(\lambda_1\)</span> und <span class="math notranslate nohighlight">\(\lambda_2\)</span>
+beschreiben, wie stark sich die Bildintensität in zwei unabhängigen Richtungen
+ändert.</p>
+<ul class="simple">
+<li><p>Ist nur ein Eigenwert groß, liegt typischerweise eine Kante vor.</p></li>
+<li><p>Sind beide Eigenwerte groß, liegt typischerweise eine Ecke vor.</p></li>
+<li><p>Sind beide Eigenwerte klein, handelt es sich um eine nahezu konstante Fläche.</p></li>
+</ul>
+<p>Die Funktion <cite>cv2.goodFeaturesToTrack</cite> kann entweder das Harris-Kriterium</p>
+<div class="math notranslate nohighlight">
+\[R = det(M) - \kappa \cdot tr(M)^2\]</div>
+<p>verwenden oder standardmäßig das Shi-Tomasi-Kriterium</p>
+<div class="math notranslate nohighlight">
+\[R = \min(\lambda_1, \lambda_2)\]</div>
+<p>nutzen. Danach werden nur Punkte behalten, deren Qualität mindestens
+<cite>qualityLevel</cite> mal so groß ist wie die beste gefundene Ecke. Zusätzlich sorgt
+<cite>minDistance</cite> dafür, dass die zurückgegebenen Punkte nicht zu dicht
+beieinander liegen.</p>
+</section>
+<section id="der-code">
+<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<p>In diesem Praktikum arbeiten Sie in der Datei</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>harris/good_features.py
+</pre></div>
+</div>
+<p>Implementieren Sie zunächst die Funktion <cite>processImage</cite>. Diese soll ein
+Kamerabild entgegennehmen, gute Ecken bestimmen und ein neues Bild mit
+eingezeichneten Markierungen zurückgeben. Anschließend vervollständigen Sie den
+Haupt-Loop, so dass die Webcam geöffnet und das Ergebnis live angezeigt wird.</p>
+</section>
+<section id="aufgabe-1-das-bild-in-graustufen-umwandeln">
+<h2><strong>Aufgabe 1</strong>: Das Bild in Graustufen umwandeln<a class="headerlink" href="#aufgabe-1-das-bild-in-graustufen-umwandeln" title="Link to this heading"></a></h2>
+<p><cite>cv2.goodFeaturesToTrack</cite> arbeitet auf einem einkanaligen Bild. Wandeln Sie das
+Kamerabild deshalb zuerst mit <cite>cv2.cvtColor</cite> in ein Grauwertbild um.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-2-gute-ecken-finden">
+<h2><strong>Aufgabe 2</strong>: Gute Ecken finden<a class="headerlink" href="#aufgabe-2-gute-ecken-finden" title="Link to this heading"></a></h2>
+<p>Rufen Sie nun <cite>cv2.goodFeaturesToTrack</cite> mit dem Grauwertbild auf. Verwenden Sie
+zunächst maximal 100 Ecken, ein <cite>qualityLevel</cite> von 0.01 und einen
+Mindestabstand von 10 Pixeln zwischen zwei Ecken.</p>
+<p>Die Funktion gibt entweder <cite>None</cite> zurück, wenn keine passenden Ecken gefunden
+wurden, oder ein Array der Form <span class="math notranslate nohighlight">\(N \times 1 \times 2\)</span>. Die letzte
+Dimension enthält jeweils die Koordinaten <span class="math notranslate nohighlight">\((x,y)\)</span> einer Ecke.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">corners</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">goodFeaturesToTrack</span><span class="p">(</span>
+    <span class="n">gray</span><span class="p">,</span>
+    <span class="n">maxCorners</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">qualityLevel</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">minDistance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-3-die-gefundenen-ecken-einzeichnen">
+<h2><strong>Aufgabe 3</strong>: Die gefundenen Ecken einzeichnen<a class="headerlink" href="#aufgabe-3-die-gefundenen-ecken-einzeichnen" title="Link to this heading"></a></h2>
+<p>Zeichnen Sie die gefundenen Ecken auf einer Kopie des Kamerabildes ein. Prüfen
+Sie vorher, ob überhaupt Ecken gefunden wurden. Da OpenCV zum Zeichnen ganze
+Pixelkoordinaten erwartet, wandeln Sie die Koordinaten mit <cite>np.int32</cite> um.</p>
+<p>Verwenden Sie anschließend <cite>cv2.circle</cite>, um jede Ecke als kleinen grünen Kreis
+zu markieren.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">overlay</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">corners</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">corners</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">corner</span> <span class="ow">in</span> <span class="n">corners</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">corner</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">overlay</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">return</span> <span class="n">overlay</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-4-die-webcam-offnen-und-das-ergebnis-anzeigen">
+<h2><strong>Aufgabe 4</strong>: Die Webcam öffnen und das Ergebnis anzeigen<a class="headerlink" href="#aufgabe-4-die-webcam-offnen-und-das-ergebnis-anzeigen" title="Link to this heading"></a></h2>
+<p>Vervollständigen Sie nun den Haupt-Loop in <cite>mainLoop</cite>. Öffnen Sie die
+Standardkamera mit <cite>cv2.VideoCapture(0)</cite>, lesen Sie in einer Endlosschleife
+jeweils ein neues Bild, rufen Sie <cite>processImage</cite> auf und zeigen Sie das Ergebnis
+mit <cite>cv2.imshow</cite> an.</p>
+<p>Beenden Sie das Programm, wenn der Benutzer die Escape-Taste drückt. Der
+zugehörige Tastencode ist 27. Geben Sie am Ende die Kamera wieder frei und
+schließen Sie alle OpenCV-Fenster.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cam</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">overlay</span> <span class="o">=</span> <span class="n">processImage</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Good Features To Track&quot;</span><span class="p">,</span> <span class="n">overlay</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+        <span class="k">break</span>
+
+<span class="n">cam</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="experimentieren">
+<h2>Experimentieren<a class="headerlink" href="#experimentieren" title="Link to this heading"></a></h2>
+<p>Variieren Sie die Parameter von <cite>cv2.goodFeaturesToTrack</cite> und beobachten Sie
+das Ergebnis:</p>
+<ul class="simple">
+<li><p>Erhöhen Sie <cite>maxCorners</cite>, um mehr mögliche Ecken zuzulassen.</p></li>
+<li><p>Erhöhen Sie <cite>qualityLevel</cite>, um nur sehr starke Ecken zu behalten.</p></li>
+<li><p>Erhöhen Sie <cite>minDistance</cite>, um die gefundenen Ecken weiter auseinander zu
+halten.</p></li>
+<li><p>Setzen Sie <cite>useHarrisDetector=True</cite>, um statt des Shi-Tomasi-Kriteriums das
+Harris-Kriterium zu verwenden.</p></li>
+</ul>
+</section>
+<section id="good-features-to-track-musterlosung">
+<h2>Good Features To Track - Musterlösung<a class="headerlink" href="#good-features-to-track-musterlosung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="good_features_source.html"><span class="doc">Good Features To Track - Musterlösung</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Der Harris Eckendetektor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../YOLO/index.html" class="btn btn-neutral float-right" title="Objekterkennung mit YOLO" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
