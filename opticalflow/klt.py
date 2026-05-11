@@ -40,12 +40,10 @@ def toGray(frame):
         A single-channel grayscale image with shape (height, width). Return the
         image itself, do not show it in this function.
     """
-    # TODO: Call cv2.cvtColor with the input image and the conversion code
-    # cv2.COLOR_BGR2GRAY.
-    # TODO: Store the result in a variable named gray or return it directly.
-    # TODO: Return the grayscale image. The KLT functions below expect exactly
-    # this single-channel image.
-    pass
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    return gray
 
 
 def detectFeaturePoints(gray):
@@ -59,12 +57,9 @@ def detectFeaturePoints(gray):
         Either None, if no useful points were found, or an OpenCV point array
         with shape (N, 1, 2). The last dimension contains x and y coordinates.
     """
-    # TODO: Call cv2.goodFeaturesToTrack on the grayscale image.
-    # TODO: Pass the prepared constant FEATURE_PARAMS as keyword arguments:
-    # cv2.goodFeaturesToTrack(gray, **FEATURE_PARAMS)
-    # TODO: Return the result unchanged. Do not convert it to integers, because
-    # cv2.calcOpticalFlowPyrLK expects floating point point coordinates.
-    pass
+    corners = cv2.goodFeaturesToTrack(gray, **FEATURE_PARAMS)
+
+    return corners
 
 
 def trackFeaturePoints(previousGray, gray, previousPoints):
@@ -82,14 +77,12 @@ def trackFeaturePoints(previousGray, gray, previousPoints):
         currentPoints, status and error. If there are no previous points,
         return None, None, None.
     """
-    # TODO: First handle the empty case. If previousPoints is None or contains
-    # zero points, return None, None, None.
-    # TODO: Otherwise call cv2.calcOpticalFlowPyrLK with:
-    # previousGray, gray, previousPoints, None, **LK_PARAMS
-    # TODO: Return all three values from OpenCV. They are needed in the next
-    # step: currentPoints contains the estimated new positions, status tells us
-    # which tracks worked, and error contains the matching error.
-    pass
+    if previousPoints is None or len(previousPoints) == 0:
+        return None, None, None
+
+    current, status, error =  cv2.calcOpticalFlowPyrLK(previousGray, gray, previousPoints, None, **LK_PARAMS)
+
+    return current, status, error
 
 
 def keepGoodTracks(previousPoints, currentPoints, status):
@@ -106,16 +99,14 @@ def keepGoodTracks(previousPoints, currentPoints, status):
         Two arrays with shape (M, 2): the successful previous point positions
         and their matching successful current point positions.
     """
-    # TODO: If currentPoints or status is None, return two empty arrays with
-    # shape (0, 2) and dtype np.float32. This keeps the main loop simple.
-    # TODO: Reshape status to a one-dimensional array and convert it to bool.
-    # A compact way is: good = status.reshape(-1).astype(bool)
-    # TODO: Use this boolean mask to select the successful entries from
-    # previousPoints and currentPoints.
-    # TODO: Reshape both selected arrays to (-1, 2), so each row contains one
-    # point as (x, y).
-    # TODO: Return the two arrays: goodPrevious, goodCurrent.
-    pass
+    if currentPoints is None:
+        return np.empty([0,2], dtype=np.float32), np.empty([0,2], dtype=np.float32)
+
+    good = status.reshape(-1).astype(bool)
+    goodPrevious = previousPoints[good].reshape(-1, 2)
+    goodCurrent = currentPoints[good].reshape(-1, 2)
+   
+    return goodPrevious, goodCurrent
 
 
 def drawTracks(frame, tracks, previousPoints, currentPoints):
